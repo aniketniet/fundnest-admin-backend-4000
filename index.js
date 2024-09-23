@@ -15,9 +15,14 @@ const video = require("./adminRoutes/videoRoutes");
 
 // Initialize express app
 const app = express();
-
+app.use(
+  cors({
+    origin: "https://shopninja.in", // Allow requests from this domain
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  })
+);
 // Use CORS middleware
-app.use(cors());
+// app.use(cors());
 // Optionally, you can configure the CORS settings:
 
 // Use bodyParser middleware
