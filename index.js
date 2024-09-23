@@ -55,7 +55,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "build")));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
 // Define parent routers
 app.use("/admin", admin);
 app.use("/videos", video);
