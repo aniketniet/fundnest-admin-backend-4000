@@ -15,12 +15,33 @@ const video = require("./adminRoutes/videoRoutes");
 
 // Initialize express app
 const app = express();
+const allowedOrigins = ["http://localhost:5000", "https://shopninja.in"];
+
 app.use(
   cors({
-    origin: "https://shopninja.in", // Allow requests from this domain
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          "The CORS policy for this site does not allow access from the specified origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true, // Allow cookies and credentials
   })
 );
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
 // Use CORS middleware
 // app.use(cors());
 // Optionally, you can configure the CORS settings:
