@@ -161,51 +161,60 @@ exports.getCourses = async (req, res) => {
 
 exports.uploadVideo = (req, res) => {
   upload(req, res, (err) => {
+    // Handle Multer errors
     if (err) {
-      return res.status(400).json({ msg: err });
-    }
-    if (!req.file) {
-      return res.status(400).json({ msg: "No file selected" });
+      return res.status(400).json({ msg: err.message || "File upload error" });
     }
 
-    const { title, description, cost, date } = req.body; // Extract title, description, and cost from request body
+    // Check if video file is uploaded
+    if (!req.files || !req.files["video"] || req.files["video"].length === 0) {
+      return res.status(400).json({ msg: "No video file selected" });
+    }
+
+    const videoFile = req.files["video"][0]; // Access the uploaded video file
+    const { title, description, cost, date } = req.body; // Extract form data
 
     // Get the original filename and extension
-    const originalName = path.parse(req.file.originalname).name;
-    const extension = path.extname(req.file.originalname);
+    const originalName = path.parse(videoFile.originalname).name;
+    const extension = path.extname(videoFile.originalname);
 
     // Make the filename unique by appending the current timestamp
     const uniqueName = `${originalName}-${Date.now()}${extension}`;
 
-    // Rename the uploaded file
-    const fs = require("fs");
-    const oldPath = req.file.path;
+    // Define old and new paths for renaming the uploaded file
+    const oldPath = videoFile.path;
     const newPath = path.join(path.dirname(oldPath), uniqueName);
 
+    // Rename the uploaded file to make the filename unique
     fs.rename(oldPath, newPath, (renameErr) => {
       if (renameErr) {
-        return res.status(500).json({ msg: "Failed to rename file" });
+        return res.status(500).json({ msg: "Failed to rename video file" });
       }
-      // Generate dynamic URL based on request
+
+      // Generate dynamic URL for the uploaded file
       const protocol = req.protocol; // http or https
       const host = req.get("host"); // domain and port (e.g., localhost:4000)
-      const url = `${protocol}://${host}/uploads/${uniqueName}`; // Full dynamic URL
+      const videoUrl = `${protocol}://${host}/uploads/${uniqueName}`; // Full URL for the video file
 
-      // const url = `http://localhost:4000/uploads/${uniqueName}`;
-
+      // Create a new Video document in the database
       const newVideo = new Video({
-        url,
+        url: videoUrl,
         title: title || originalName, // Use provided title or fallback to original name
         description: description || "", // Optional description
         cost: cost || 0, // Optional cost, default to 0 if not provided
         date: date || new Date(), // Optional date, default to current date if not provided
       });
 
+      // Save video details in the database
       newVideo
         .save()
-        .then((video) => res.json({ fileName: uniqueName, url: video.url }))
+        .then((video) =>
+          res.status(201).json({ fileName: uniqueName, url: video.url })
+        )
         .catch((err) =>
-          res.status(500).json({ msg: "Failed to save video URL in database" })
+          res
+            .status(500)
+            .json({ msg: "Failed to save video URL in database", error: err })
         );
     });
   });
