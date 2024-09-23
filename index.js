@@ -19,13 +19,6 @@ const app = express();
 // Use CORS middleware
 app.use(cors());
 // Optionally, you can configure the CORS settings:
-app.use(
-  cors({
-    origin: "*", // Allow all origins (you can specify specific domains here)
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
-  })
-);
 
 // Use bodyParser middleware
 app.use(bodyParser.json());
