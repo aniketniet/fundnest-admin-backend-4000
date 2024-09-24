@@ -4,6 +4,8 @@ const path = require("path");
 const Video = require("../adminModels/Video");
 const Courses = require("../adminModels/courses");
 const FAQs = require("../adminModels/faqs");
+const mongoose = require('mongoose');
+
 
 // Set up storage engine for Multer
 const storage = multer.diskStorage({
