@@ -4,7 +4,7 @@ const videoController = require("../adminControllers/videoController");
 const jwtTokenMiddleware = require("../adminMiddleware/jwtTokenMiddleware");
 
 // Route to handle video upload
-router.post("/upload", jwtTokenMiddleware, videoController.uploadVideo);
+router.post("/upload", videoController.uploadVideo);
 
 router.get("/get-uploads", videoController.getVideos);
 
