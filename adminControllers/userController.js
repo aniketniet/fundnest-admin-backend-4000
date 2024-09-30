@@ -267,10 +267,10 @@ const getFAQs = async (req, res) => {
 // get faq by id
 
 const getBlogById = async (req, res) => {
-  const { id } = req.query; // Access id from query parameters
+  const { id } = req.params; // Access id from URL parameters
   try {
-    console.log(id);
-    const blog = await FAQs.findOne({ slug: id }); // Assuming you're querying by a slug field
+    console.log(id); // Log the id to check if it's correct
+    const blog = await FAQs.findOne({ slug: id }); // Query by slug in the database
     if (!blog) {
       return res.status(404).json({ error: "Blog not found" });
     }
