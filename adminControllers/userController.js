@@ -252,7 +252,6 @@ const deleteBlogById = async (req, res) => {
 const getFAQs = async (req, res) => {
   try {
     const faqs = await FAQs.find();
-
     // Modify each FAQ to limit the answer to the first 10 words
     const shortenedFaqs = faqs.map((faq) => {
       const shortenedAnswer = faq.answer.split(" ").slice(0, 10).join(" ");
@@ -268,13 +267,14 @@ const getFAQs = async (req, res) => {
 // get faq by id
 
 const getBlogById = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.query; // Access id from query parameters
   try {
-    const faq = await FAQs.findById(id);
-    if (!faq) {
-      return res.status(404).json({ error: "FAQ not found" });
+    console.log(id);
+    const blog = await FAQs.findOne({ slug: id }); // Assuming you're querying by a slug field
+    if (!blog) {
+      return res.status(404).json({ error: "Blog not found" });
     }
-    res.status(200).json(faq);
+    res.status(200).json(blog);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
