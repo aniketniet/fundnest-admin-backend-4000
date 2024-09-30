@@ -56,7 +56,8 @@ exports.createFAQs = async (req, res) => {
         return res.status(400).json({ msg: "No video file selected" });
       }
       // Extract question and answer from the request body
-      const { question, answer } = req.body;
+      const { question, answer, metaDiscription, metaTitle, metaKeywords } =
+        req.body;
 
       // Check if an image file was uploaded
       let imageUrl = "";
