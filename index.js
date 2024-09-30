@@ -30,9 +30,9 @@ app.get("/ping", (req, res) => {
   res.send("pong");
 });
 
-app.use("/api/admin", admin);
-app.use("/api/videos", video);
-app.use("/api/consult", consult);
+app.use("/admin", admin);
+app.use("/videos", video);
+app.use("/consult", consult);
 app.use(middleware);
 
 const dbURI =
