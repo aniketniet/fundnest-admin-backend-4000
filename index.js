@@ -53,15 +53,15 @@ app.get("*", (req, res) => {
 });
 
 const privateKey = fs.readFileSync(
-  "/etc/letsencrypt/live/brandneers.com/privkey.pem",
+  "../etc/letsencrypt/live/brandneers.com/privkey.pem",
   "utf8"
 );
 const certificate = fs.readFileSync(
-  "/etc/letsencrypt/live/brandneers.com/cert.pem",
+  "../etc/letsencrypt/live/brandneers.com/cert.pem",
   "utf8"
 );
 const ca = fs.readFileSync(
-  "/etc/letsencrypt/live/brandneers.com/chain.pem",
+  "../etc/letsencrypt/live/brandneers.com/chain.pem",
   "utf8"
 );
 
