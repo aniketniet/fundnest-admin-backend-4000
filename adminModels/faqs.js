@@ -13,6 +13,15 @@ const faqSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    metaDiscription: {
+      type: String,
+    },
+    metaTitle: {
+      type: String,
+    },
+    metaKeywords: {
+      type: String,
+    },
   },
   { timestamps: true } // Enable timestamps
 );

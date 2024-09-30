@@ -4,8 +4,7 @@ const path = require("path");
 const Video = require("../adminModels/Video");
 const Courses = require("../adminModels/courses");
 const FAQs = require("../adminModels/faqs");
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose");
 
 // Set up storage engine for Multer
 const storage = multer.diskStorage({
@@ -72,6 +71,9 @@ exports.createFAQs = async (req, res) => {
         question,
         answer,
         image: imageUrl, // Store the image URL
+        metaDiscription,
+        metaTitle,
+        metaKeywords,
       });
 
       // Save the new FAQ in the database
