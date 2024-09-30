@@ -30,9 +30,9 @@ app.get("/ping", (req, res) => {
   res.send("pong");
 });
 
-app.use("/admin", admin);
-app.use("/videos", video);
-app.use("/consult", consult);
+app.use("/api/admin", admin);
+app.use("/api/videos", video);
+app.use("/api/consult", consult);
 app.use(middleware);
 
 const dbURI =
@@ -52,26 +52,26 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-const privateKey = fs.readFileSync(
-  "../etc/letsencrypt/live/brandneers.com/privkey.pem",
-  "utf8"
-);
-const certificate = fs.readFileSync(
-  "../etc/letsencrypt/live/brandneers.com/cert.pem",
-  "utf8"
-);
-const ca = fs.readFileSync(
-  "../etc/letsencrypt/live/brandneers.com/chain.pem",
-  "utf8"
-);
+// const privateKey = fs.readFileSync(
+//   "../etc/letsencrypt/live/brandneers.com/privkey.pem",
+//   "utf8"
+// );
+// const certificate = fs.readFileSync(
+//   "../etc/letsencrypt/live/brandneers.com/cert.pem",
+//   "utf8"
+// );
+// const ca = fs.readFileSync(
+//   "../etc/letsencrypt/live/brandneers.com/chain.pem",
+//   "utf8"
+// );
 
-const credentials = {
-  key: privateKey,
-  cert: certificate,
-  ca: ca,
-};
+// const credentials = {
+//   key: privateKey,
+//   cert: certificate,
+//   ca: ca,
+// };
 
-const httpsServer = https.createServer(credentials, app);
+const httpsServer = https.createServer(app);
 
 const httpApp = express();
 httpApp.use((req, res) => {
