@@ -66,6 +66,11 @@ exports.createFAQs = async (req, res) => {
           req.files.thumbnail[0].filename
         }`;
       }
+      const now = new Date();
+      const day = String(now.getDate()).padStart(2, "0");
+      const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+      const year = now.getFullYear();
+      const formattedDate = `${day}-${month}-${year}`;
 
       // Create new FAQ document with the image URL
       const newFAQs = new FAQs({
@@ -75,6 +80,7 @@ exports.createFAQs = async (req, res) => {
         metaDiscription,
         metaTitle,
         metaKeywords,
+        slug: `${formattedDate}-${question.toLowerCase().replace(/\s+/g, "-")}`,
       });
 
       // Save the new FAQ in the database

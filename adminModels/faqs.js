@@ -22,6 +22,9 @@ const faqSchema = new mongoose.Schema(
     metaKeywords: {
       type: String,
     },
+    slug: {
+      type: String,
+    },
   },
   { timestamps: true } // Enable timestamps
 );
