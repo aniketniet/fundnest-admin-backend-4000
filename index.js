@@ -4,6 +4,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
+const https = require("https");
+const http = require("http");
+const fs = require("fs");
 
 dotenv.config();
 
@@ -56,8 +59,30 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-// Start the server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server is running on port ${PORT}`);
+// SSL Certificate and Key
+const options = {
+  key: fs.readFileSync("/etc/ssl/private/myserver.key"), // Update with your private key path
+  cert: fs.readFileSync("/etc/ssl/certs/myserver.crt"), // Update with your certificate path
+};
+
+// Start HTTPS Server
+const httpsPort = process.env.PORT || 4000; // Default HTTPS port
+const httpsServer = https.createServer(options, app);
+
+// Start HTTP Server to redirect to HTTPS
+// const httpPort = process.env.HTTP_PORT || 80; // Default HTTP port
+// const httpServer = http.createServer((req, res) => {
+//   res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
+//   res.end();
+// });
+
+// Start servers
+httpsServer.listen(httpsPort, () => {
+  console.log(`HTTPS Server is running on port ${httpsPort}`);
 });
+
+// httpServer.listen(httpPort, () => {
+//   console.log(
+//     `HTTP Server is running on port ${httpPort} and redirecting to HTTPS`
+//   );
+// });
