@@ -52,10 +52,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-const privateKey = fs.readFileSync(
-  "/etc/letsencrypt/live/brandneers.com/privkey.pem",
-  "utf8"
-);
+const privateKey = fs.readFileSync("/home/ubuntu/privkey.pem", "utf8");
 const certificate = fs.readFileSync(
   "/etc/letsencrypt/live/brandneers.com/cert.pem",
   "utf8"
