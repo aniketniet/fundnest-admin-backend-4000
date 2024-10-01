@@ -52,21 +52,15 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-// Update these paths to point to the Let's Encrypt certificate files
 const privateKey = fs.readFileSync(
-  "/etc/letsencrypt/live/brandneers.com/privkey.pem",
+  "/home/ubuntu/ssl-certificates/privkey.pem",
   "utf8"
 );
 const certificate = fs.readFileSync(
-  "/etc/letsencrypt/live/brandneers.com/fullchain.pem",
+  "/home/ubuntu/ssl-certificates/cert.pem",
   "utf8"
 );
-// The chain is included in fullchain.pem, so this line may be optional
-// If you need to reference it separately, you can read it, but it's not necessary
-const ca = fs.readFileSync(
-  "/etc/letsencrypt/live/brandneers.com/chain.pem",
-  "utf8"
-);
+const ca = fs.readFileSync("/home/ubuntu/ssl-certificates/chain.pem", "utf8");
 
 const credentials = {
   key: privateKey,
