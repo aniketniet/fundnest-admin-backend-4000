@@ -4,41 +4,37 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
+const http = require("http");
+const https = require("https");
+const fs = require("fs");
 
 dotenv.config();
 
-// Importing routers and middleware
 const admin = require("./adminRoutes/userRoutes");
 const consult = require("./adminRoutes/consultRoutes");
 const middleware = require("./adminMiddleware/jwtTokenMiddleware");
 const video = require("./adminRoutes/videoRoutes");
 
-// Initialize express app
 const app = express();
 
-// Use CORS middleware
 app.use(cors());
-// Optionally, you can configure the CORS settings:
 
-// Use bodyParser middleware
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Set static folder for React
 app.use(express.static(path.join(__dirname, "build")));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.get("/ping", (req, res) => {
   res.send("pong");
 });
-// Define parent routers
+
 app.use("/api/admin", admin);
 app.use("/api/videos", video);
 app.use("/api/consult", consult);
 app.use(middleware);
 
-// MongoDB connection
 const dbURI =
   process.env.DBURI ||
   "mongodb+srv://Fundnest:8877446687@fundnest.lris2bh.mongodb.net/";
@@ -56,8 +52,42 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-// Start the server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server is running on port ${PORT}`);
+const privateKey = fs.readFileSync(
+  "/etc/letsencrypt/live/brandneers.com/privkey.pem",
+  "utf8"
+);
+const certificate = fs.readFileSync(
+  "/etc/letsencrypt/live/brandneers.com/cert.pem",
+  "utf8"
+);
+const ca = fs.readFileSync(
+  "/etc/letsencrypt/live/brandneers.com/chain.pem",
+  "utf8"
+);
+
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+  ca: ca,
+};
+
+const httpsServer = https.createServer(credentials, app);
+
+const httpApp = express();
+httpApp.use((req, res) => {
+  res.redirect(`https://${req.headers.host}${req.url}`);
+});
+const httpServer = http.createServer(httpApp);
+
+const HTTP_PORT = 3000;
+const HTTPS_PORT = process.env.PORT || 4000;
+
+httpsServer.listen(HTTPS_PORT, () => {
+  console.log(`HTTPS Server is running on port ${HTTPS_PORT}`);
+});
+
+httpServer.listen(HTTP_PORT, () => {
+  console.log(
+    `HTTP Server is running on port ${HTTP_PORT} and redirecting to HTTPS`
+  );
 });
