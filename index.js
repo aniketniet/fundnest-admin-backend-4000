@@ -54,10 +54,7 @@ app.get("*", (req, res) => {
 
 const privateKey = fs.readFileSync("/home/ubuntu/privkey.pem", "utf8");
 const certificate = fs.readFileSync("/home/ubuntu/cert.pem", "utf8");
-const ca = fs.readFileSync(
-  "/etc/letsencrypt/live/brandneers.com/chain.pem",
-  "utf8"
-);
+const ca = fs.readFileSync("/home/ubuntu/chain.pem", "utf8");
 
 const credentials = {
   key: privateKey,
