@@ -284,6 +284,11 @@ const getBlogById = async (req, res) => {
 const setPrice = async (req, res) => {
   const { ideaPrice, profilePrice } = req.body;
 
+  if (!ideaPrice || !profilePrice) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+  console.log(ideaPrice, profilePrice);
+
   try {
     // Check if a price entry already exists
     let price = await Price.findOne();
