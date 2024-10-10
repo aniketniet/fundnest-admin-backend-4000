@@ -16,6 +16,7 @@ const {
   deleteConsultById,
   deleteBlogById,
   getBlogById,
+  setPrice,
 } = require("../adminControllers/userController");
 
 const { createFAQs } = require("../adminControllers/videoController");
@@ -52,5 +53,7 @@ router.delete("/deleteCourse/:id", jwtTokenMiddleware, DeleteCourseById);
 router.delete("/delete-webinar/:id", jwtTokenMiddleware, deleteWebinarById);
 router.delete("/delete-consult/:id", jwtTokenMiddleware, deleteConsultById);
 router.delete("/delete-blog/:id", jwtTokenMiddleware, deleteBlogById);
+
+router.post("/set-price", jwtTokenMiddleware, setPrice);
 
 module.exports = router;

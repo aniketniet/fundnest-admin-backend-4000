@@ -12,6 +12,7 @@ const FAQs = require("../adminModels/faqs");
 const Consults = require("../adminModels/consult");
 const Course = require("../adminModels/courses");
 const Video = require("../adminModels/Video");
+const Price = require("../adminModels/Price");
 // const Appointments = require('../../backend/model/appointment')
 
 dotenv.config();
@@ -280,6 +281,40 @@ const getBlogById = async (req, res) => {
   }
 };
 
+const setPrice = async (req, res) => {
+  const { ideaPrice, profilePrice } = req.body;
+
+  try {
+    // Check if a price entry already exists
+    let price = await Price.findOne();
+
+    if (price) {
+      // If a price exists, update the existing record
+      price.ideaPrice = ideaPrice;
+      price.profilePrice = profilePrice;
+
+      await price.save(); // Save the updated record
+      return res
+        .status(200)
+        .json({ message: "Price updated successfully", price });
+    } else {
+      // If no price exists, create a new record
+      const newPrice = new Price({
+        ideaPrice,
+        profilePrice,
+      });
+
+      await newPrice.save(); // Save the new record
+      return res
+        .status(201)
+        .json({ message: "Price created successfully", newPrice });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error", error });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -297,4 +332,5 @@ module.exports = {
   deleteConsultById,
   deleteBlogById,
   getBlogById,
+  setPrice,
 };
