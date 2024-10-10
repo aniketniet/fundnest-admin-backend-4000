@@ -320,6 +320,19 @@ const setPrice = async (req, res) => {
   }
 };
 
+// get price
+const getPrice = async (req, res) => {
+  try {
+    const price = await Price.findOne();
+    if (!price) {
+      return res.status(404).json({ error: "Price not found" });
+    }
+    res.status(200).json(price);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -338,4 +351,5 @@ module.exports = {
   deleteBlogById,
   getBlogById,
   setPrice,
+  getPrice,
 };
