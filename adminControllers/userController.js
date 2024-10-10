@@ -13,6 +13,7 @@ const Consults = require("../adminModels/consult");
 const Course = require("../adminModels/courses");
 const Video = require("../adminModels/Video");
 const Price = require("../adminModels/Price");
+const Contact = require("../adminModels/contact");
 // const Appointments = require('../../backend/model/appointment')
 
 dotenv.config();
@@ -333,6 +334,18 @@ const getPrice = async (req, res) => {
   }
 };
 
+const getContact = async (req, res) => {
+  try {
+    const contact = await Contact.findOne();
+    if (!contact) {
+      return res.status(404).json({ error: "Contact not found" });
+    }
+    res.status(200).json(contact);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -352,4 +365,5 @@ module.exports = {
   getBlogById,
   setPrice,
   getPrice,
+  getContact,
 };
