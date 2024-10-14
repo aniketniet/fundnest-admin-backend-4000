@@ -285,46 +285,5 @@ exports.getVideoById = async (req, res) => {
 
 // Set Services API
 exports.setServices = async (req, res) => {
-  try {
-    // Use multer to handle image upload
-    upload(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message }); // Handle multer error
-      }
-
-      // Check if an image file was uploaded
-      let imageUrl = "";
-      if (req.files && req.files.thumbnail) {
-        imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
-          req.files.thumbnail[0].filename
-        }`; // Assuming the field is 'thumbnail' for the image
-      } else {
-        return res.status(400).json({ msg: "No image file selected" });
-      }
-
-      // Extract data from the request body
-      const { price, tittle, subtitle, discription } = req.body;
-
-      // Create new Service document with the image URL
-      const newService = new Service({
-        image: imageUrl, // Save the image URL in the DB
-        price,
-        tittle,
-        subtitle,
-        discription,
-      });
-
-      // Save the new service in the database
-      await newService.save();
-
-      // Respond with success message and data
-      res.status(201).json({
-        newService,
-        message: "Service created successfully with image",
-      });
-    });
-  } catch (error) {
-    // Handle any errors during the process
-    res.status(500).json({ error: error.message });
-  }
+  console.log(req.body);
 };
