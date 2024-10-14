@@ -5,6 +5,7 @@ const Video = require("../adminModels/Video");
 const Courses = require("../adminModels/courses");
 const FAQs = require("../adminModels/faqs");
 const mongoose = require("mongoose");
+const Service = require("../adminModels/Service");
 
 // Set up storage engine for Multer
 const storage = multer.diskStorage({
@@ -280,4 +281,47 @@ exports.getVideoById = async (req, res) => {
     console.error("Error fetching video:", error);
     res.status(500).json({ msg: "Server error" });
   }
+};
+
+// Set Services API
+exports.setServices = async (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message }); // Handle multer error
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ msg: "No image file selected" });
+    }
+
+    const { price, tittle, subtitle, discription } = req.body;
+
+    try {
+      // Construct image URL
+      const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`;
+
+      // Create new Service document
+      const newService = new Service({
+        image: imageUrl, // Save image URL in DB
+        price,
+        tittle,
+        subtitle,
+        discription,
+      });
+
+      // Save the service in the database
+      await newService.save();
+
+      // Respond with success message and data
+      res.status(201).json({
+        newService,
+        message: "Service created successfully with image",
+      });
+    } catch (error) {
+      // Handle any errors during the process
+      res.status(500).json({ error: error.message });
+    }
+  });
 };
