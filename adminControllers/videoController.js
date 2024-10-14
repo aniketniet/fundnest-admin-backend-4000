@@ -285,33 +285,36 @@ exports.getVideoById = async (req, res) => {
 
 // Set Services API
 exports.setServices = async (req, res) => {
-  upload(req, res, async (err) => {
-    if (err) {
-      return res.status(400).json({ error: err.message }); // Handle multer error
-    }
+  try {
+    // Use multer to handle image upload
+    upload(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ error: err.message }); // Handle multer error
+      }
 
-    if (!req.file) {
-      return res.status(400).json({ msg: "No image file selected" });
-    }
+      // Check if an image file was uploaded
+      let imageUrl = "";
+      if (req.files && req.files.thumbnail) {
+        imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+          req.files.thumbnail[0].filename
+        }`; // Assuming the field is 'thumbnail' for the image
+      } else {
+        return res.status(400).json({ msg: "No image file selected" });
+      }
 
-    const { price, tittle, subtitle, discription } = req.body;
+      // Extract data from the request body
+      const { price, tittle, subtitle, discription } = req.body;
 
-    try {
-      // Construct image URL
-      const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
-        req.file.filename
-      }`;
-
-      // Create new Service document
+      // Create new Service document with the image URL
       const newService = new Service({
-        image: imageUrl, // Save image URL in DB
+        image: imageUrl, // Save the image URL in the DB
         price,
         tittle,
         subtitle,
         discription,
       });
 
-      // Save the service in the database
+      // Save the new service in the database
       await newService.save();
 
       // Respond with success message and data
@@ -319,9 +322,9 @@ exports.setServices = async (req, res) => {
         newService,
         message: "Service created successfully with image",
       });
-    } catch (error) {
-      // Handle any errors during the process
-      res.status(500).json({ error: error.message });
-    }
-  });
+    });
+  } catch (error) {
+    // Handle any errors during the process
+    res.status(500).json({ error: error.message });
+  }
 };
