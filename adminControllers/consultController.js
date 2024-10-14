@@ -5,6 +5,7 @@ const User = require("../adminModels/user");
 const Consult = require("../adminModels/consult");
 const multer = require("multer");
 const path = require("path");
+const Service = require("../adminModels/Service");
 
 dotenv.config();
 
@@ -126,6 +127,79 @@ exports.getConsultById = async (req, res) => {
     console.error("Error fetching consult:", error);
     res.status(500).json({
       message: "Error fetching consult",
+      error: error.message,
+    });
+  }
+};
+
+// Create service
+exports.setService = (req, res) => {
+  // Image upload
+  upload.single("image")(req, res, async function (err) {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Image upload failed", error: err.message });
+    }
+
+    const { tittle, subtitle, discription, price } = req.body;
+
+    console.log(req.body);
+
+    // Get image URL if image was uploaded
+    let imageUrl = "";
+    if (req.file) {
+      imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`;
+    }
+
+    // Validate required fields
+    if (!tittle || !discription || !price || !imageUrl) {
+      return res.status(400).json({
+        message: "Tittle, description, price, and image are required",
+      });
+    }
+
+    // Create a new service entry
+    try {
+      const newService = new Service({
+        image: imageUrl,
+        tittle,
+        subtitle, // Optional field
+        discription,
+        price,
+      });
+
+      // Save the service in the database
+      await newService.save();
+
+      res.status(201).json({
+        message: "Service created successfully",
+        service: newService,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Error creating service",
+        error: error.message,
+      });
+    }
+  });
+};
+
+// Get all services
+exports.getAllServices = async (req, res) => {
+  try {
+    const services = await Service.find();
+    res.status(200).json({
+      message: "All services fetched successfully",
+      services: services,
+    });
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    res.status(500).json({
+      message: "Error fetching services",
       error: error.message,
     });
   }

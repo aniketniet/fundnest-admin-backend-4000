@@ -5,7 +5,6 @@ const Video = require("../adminModels/Video");
 const Courses = require("../adminModels/courses");
 const FAQs = require("../adminModels/faqs");
 const mongoose = require("mongoose");
-const Service = require("../adminModels/Service");
 
 // Set up storage engine for Multer
 const storage = multer.diskStorage({
@@ -281,9 +280,4 @@ exports.getVideoById = async (req, res) => {
     console.error("Error fetching video:", error);
     res.status(500).json({ msg: "Server error" });
   }
-};
-
-// Set Services API
-exports.setServices = async (req, res) => {
-  console.log(req.body);
 };

@@ -10,4 +10,7 @@ router.get("/getConsultall", consultController.getConsultAll);
 
 router.get("/getConsult/:id", consultController.getConsultById);
 
+router.post("/set-service", consultController.setService);
+router.get("/get-services", consultController.getAllServices);
+
 module.exports = router;
