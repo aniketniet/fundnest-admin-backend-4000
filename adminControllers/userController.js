@@ -336,11 +336,14 @@ const getPrice = async (req, res) => {
 
 const getContact = async (req, res) => {
   try {
-    const contact = await Contact.findOne();
-    if (!contact) {
-      return res.status(404).json({ error: "Contact not found" });
+    const contacts = await Contact.find(); // Fetches all records from the Contact collection
+
+    if (contacts.length === 0) {
+      // Check if the contacts array is empty
+      return res.status(404).json({ error: "No contacts found" });
     }
-    res.status(200).json(contact);
+
+    res.status(200).json(contacts); // Return all contacts in the response
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
