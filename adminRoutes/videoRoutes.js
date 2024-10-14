@@ -14,6 +14,8 @@ router.post("/create-courses", videoController.createCourses);
 router.get("/get-courses", videoController.getCourses);
 
 router.post("/set-services", videoController.setServices);
-router.get("/get-services", videoController.getServices);
+// router.get("/get-services", videoController.getServices);
+
+// Route to handle video upload
 
 module.exports = router;
