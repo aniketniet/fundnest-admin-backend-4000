@@ -204,3 +204,18 @@ exports.getAllServices = async (req, res) => {
     });
   }
 };
+
+exports.deleteServiceById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleteService = await Service.findByIdAndDelete(id);
+    if (!deleteService) {
+      return res.status(404).json({ error: "Service not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Service deleted successfully", status: 200 });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

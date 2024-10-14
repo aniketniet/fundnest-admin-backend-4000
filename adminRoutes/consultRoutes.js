@@ -12,5 +12,10 @@ router.get("/getConsult/:id", consultController.getConsultById);
 
 router.post("/set-service", consultController.setService);
 router.get("/get-services", consultController.getAllServices);
+router.delete(
+  "/delete-service/:id",
+  jwtTokenMiddleware,
+  consultController.deleteServiceById
+);
 
 module.exports = router;
