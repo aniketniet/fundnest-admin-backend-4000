@@ -250,6 +250,41 @@ const deleteBlogById = async (req, res) => {
   }
 };
 
+// PUT API for editing an FAQ by ID
+const editBlogById = async (req, res) => {
+  const { id } = req.params; // Get the ID from URL parameters
+  const { question, answer, metaDiscription, metaTitle, metaKeywords } =
+    req.body; // Destructure allowed fields
+
+  // Validate that at least one field is provided for update
+  if (!question && !answer && !metaDiscription && !metaTitle && !metaKeywords) {
+    return res
+      .status(400)
+      .json({ error: "At least one field must be provided for update." });
+  }
+
+  try {
+    // Find and update the document by ID with only the allowed fields
+    const updatedFAQ = await FAQs.findByIdAndUpdate(
+      id,
+      { question, answer, metaDiscription, metaTitle, metaKeywords },
+      { new: true, runValidators: true, omitUndefined: true } // Return the updated document, validate data, and omit undefined fields
+    );
+
+    // If no document found with the given ID, return a 404 error
+    if (!updatedFAQ) {
+      return res.status(404).json({ error: "FAQ not found" });
+    }
+
+    // Return the updated document
+    res.status(200).json(updatedFAQ);
+  } catch (error) {
+    // Handle errors and return appropriate status and message
+    console.error(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
 //Get FAQs
 const getFAQs = async (req, res) => {
   try {
@@ -369,4 +404,5 @@ module.exports = {
   setPrice,
   getPrice,
   getContact,
+  editBlogById,
 };
