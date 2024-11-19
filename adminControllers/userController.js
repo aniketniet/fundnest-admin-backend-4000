@@ -291,7 +291,7 @@ const getFAQs = async (req, res) => {
     const faqs = await FAQs.find();
     // Modify each FAQ to limit the answer to the first 10 words
     const shortenedFaqs = faqs.map((faq) => {
-      const shortenedAnswer = faq.answer.split(" ").slice(0, 10).join(" ");
+      const shortenedAnswer = faq.answer;
       return { ...faq._doc, answer: shortenedAnswer + "..." }; // Add "..." at the end for clarity
     });
 
